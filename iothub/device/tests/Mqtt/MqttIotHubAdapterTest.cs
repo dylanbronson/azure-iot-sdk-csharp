@@ -5,7 +5,6 @@ namespace Microsoft.Azure.Devices.Client.Test.Mqtt
 {
     using DotNetty.Codecs.Mqtt.Packets;
     using DotNetty.Transport.Channels;
-    using FluentAssertions;
     using Microsoft.Azure.Devices.Client.Transport.Mqtt;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
@@ -129,7 +128,7 @@ namespace Microsoft.Azure.Devices.Client.Test.Mqtt
             mqttIotHubAdapter.ChannelActive(channelHandlerContext.Object);
 
             // Assert: the auth chain should be part of the username
-            ConnectPacket connectPacket = messages.First().As<ConnectPacket>();
+            ConnectPacket connectPacket = messages.First() as ConnectPacket;
             NameValueCollection queryParams = ExtractQueryParamsFromConnectUsername(connectPacket.Username);
             Assert.AreEqual(authChain, queryParams.Get("auth-chain"));
         }
@@ -199,7 +198,7 @@ namespace Microsoft.Azure.Devices.Client.Test.Mqtt
             mqttIotHubAdapter.ChannelActive(channelHandlerContext.Object);
 
             // Assert: the username should use the preview API version and have the model ID appended
-            ConnectPacket connectPacket = messages.First().As<ConnectPacket>();
+            ConnectPacket connectPacket = messages.First() as ConnectPacket;
             NameValueCollection queryParams = ExtractQueryParamsFromConnectUsername(connectPacket.Username);
             Assert.AreEqual(ClientApiVersionHelper.ApiVersionPreview, queryParams.Get(ApiVersionParam));
             Assert.AreEqual(options.ModelId, queryParams.Get(ModelIdParam));
@@ -228,7 +227,7 @@ namespace Microsoft.Azure.Devices.Client.Test.Mqtt
             mqttIotHubAdapter.ChannelActive(channelHandlerContext.Object);
 
             // Assert: the username should use the GA API version and not have the model ID appended
-            ConnectPacket connectPacket = messages.First().As<ConnectPacket>();
+            ConnectPacket connectPacket = messages.First() as ConnectPacket;
             NameValueCollection queryParams = ExtractQueryParamsFromConnectUsername(connectPacket.Username);
             Assert.AreEqual(ClientApiVersionHelper.ApiVersionLatest, queryParams.Get(ApiVersionParam));
             Assert.IsFalse(queryParams.AllKeys.Contains(ModelIdParam));
